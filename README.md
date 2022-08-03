@@ -1,4 +1,4 @@
-# Tar-Cpp
+# substreams_cpp
 
 A c++ / cpp library designed to wrap streambuf and istream similar to substrings.
 
