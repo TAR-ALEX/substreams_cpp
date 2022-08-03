@@ -23,7 +23,7 @@ ReflowComments: 'false'
 SortIncludes: 'true'
 SpacesBeforeTrailingComments: '0'
 TabWidth: '4'
-UseTab: Always
+UseTab: Never
 AlignTrailingComments: 'true'
 AlignAfterOpenBracket: 'BlockIndent'
 SortUsingDeclarations: 'true'

@@ -32,24 +32,24 @@
 #include <fstream>
 
 using namespace std;
-using namespace estd; // library namespace
+using namespace estd;// library namespace
 
 int main() {
-	string filename = "./example.txt";
-	ifstream file(filename);
-	isubstream subFile1 = isubstream(file.rdbuf(), 3, 10);
-	isubstream subFile2 = isubstream(file.rdbuf(), 16, 10);
-	isubstream subFile3 = isubstream(file.rdbuf(), 29, 10);
-	char c;
-	while (subFile1 >> c) { cout << c; }
-	cout << endl;
+    string filename = "./example.txt";
+    ifstream file(filename);
+    isubstream subFile1 = isubstream(file.rdbuf(), 3, 10);
+    isubstream subFile2 = isubstream(file.rdbuf(), 16, 10);
+    isubstream subFile3 = isubstream(file.rdbuf(), 29, 10);
+    char c;
+    while (subFile1 >> c) { cout << c; }
+    cout << endl;
 
-	cout << subFile3.rdbuf() << endl;
+    cout << subFile3.rdbuf() << endl;
 
-	char buffer[100] = {};
-	int size = subFile2.read(buffer, 100).gcount();
-	cout << buffer;
-	cout << endl;
-	cout << "size = " << size << endl;
-	return 0;
+    char buffer[100] = {};
+    int size = subFile2.read(buffer, 100).gcount();
+    cout << buffer;
+    cout << endl;
+    cout << "size = " << size << endl;
+    return 0;
 }
