@@ -78,13 +78,13 @@ namespace estd {
 
 	protected:
 		int underflow() {
-			if (pos >= length) return traits_type::eof();
+			if (pos + std::streampos(1) >= length) return traits_type::eof();
 			seekoff(std::streamoff(0), std::ios_base::cur);
 			return buf->sgetc();
 		}
 
 		int uflow() {
-			if (pos > length) return traits_type::eof();
+			if (pos + std::streampos(1) > length) return traits_type::eof();
 			seekoff(std::streamoff(0), std::ios_base::cur);
 			pos += std::streamsize(1);
 			return buf->sbumpc();
