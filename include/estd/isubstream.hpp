@@ -35,48 +35,36 @@
 #include <iostream>
 #include <memory>
 
-
 namespace estd {
-    class isubstream : public std::istream {
-    public:
-        isubstream(
-            std::streambuf* buffer, std::streampos start, std::streamsize size
-        ) :
-            std::istream(&buffer_),
-            buffer_(buffer, start, size) {}
+	class isubstream : public std::istream {
+	public:
+		isubstream() : std::istream(&buffer_) {}
 
-        isubstream(std::streambuf* buffer, uint64_t start, uint64_t size) :
-            isubstream(buffer, std::streampos(start), std::streamsize(size)) {}
+		isubstream(std::streambuf* buffer, int64_t start, int64_t size) :
+			std::istream(&buffer_), buffer_(buffer, std::streampos(start), std::streamsize(size)) {}
 
-        isubstream(
-            std::istream& buffer, std::streampos start, std::streamsize size
-        ) :
-            isubstream(buffer.rdbuf(), start, size) {}
+		isubstream(std::streambuf& buffer, int64_t start, int64_t size) :
+			std::istream(&buffer_), buffer_(&buffer, std::streampos(start), std::streamsize(size)) {}
 
-        isubstream(std::istream& buffer, uint64_t start, uint64_t size) :
-            isubstream(
-                buffer.rdbuf(), std::streampos(start), std::streamsize(size)
-            ) {}
+		isubstream(std::istream& buffer, int64_t start, int64_t size) : isubstream(buffer.rdbuf(), start, size) {}
 
-        isubstream(isubstream const& other) :
-            std::istream(&buffer_),
-            buffer_(other.buffer_) {}
+		isubstream(std::istream* buffer, int64_t start, int64_t size) : isubstream(buffer->rdbuf(), start, size) {}
 
-        isubstream(isubstream&& other) :
-            std::istream(&buffer_),
-            buffer_(other.buffer_) {}
+		isubstream(isubstream const& other) : std::istream(&buffer_), buffer_(other.buffer_) {}
 
-        isubstream& operator=(const isubstream& other) {
-            buffer_ = other.buffer_;
-            return *this;
-        }
+		isubstream(isubstream&& other) : std::istream(&buffer_), buffer_(other.buffer_) {}
 
-        isubstream& operator=(isubstream&& other) {
-            buffer_ = other.buffer_;
-            return *this;
-        }
+		isubstream& operator=(const isubstream& other) {
+			buffer_ = other.buffer_;
+			return *this;
+		}
 
-    private:
-        substreambuf buffer_;
-    };
+		isubstream& operator=(isubstream&& other) {
+			buffer_ = other.buffer_;
+			return *this;
+		}
+
+	private:
+		substreambuf buffer_;
+	};
 };// namespace estd

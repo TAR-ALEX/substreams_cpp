@@ -15,7 +15,7 @@ BreakConstructorInitializers: AfterColon
 CompactNamespaces: 'false'
 IndentWidth: '4'
 KeepEmptyLinesAtTheStartOfBlocks: 'false'
-MaxEmptyLinesToKeep: '2'
+MaxEmptyLinesToKeep: '3'
 NamespaceIndentation: All
 PenaltyBreakBeforeFirstCallParameter: '10'
 PointerAlignment: Left
@@ -23,10 +23,14 @@ ReflowComments: 'false'
 SortIncludes: 'true'
 SpacesBeforeTrailingComments: '0'
 TabWidth: '4'
-UseTab: Never
+UseTab: 'Always'
 AlignTrailingComments: 'true'
 AlignAfterOpenBracket: 'BlockIndent'
+AlwaysBreakAfterReturnType: 'None'
 SortUsingDeclarations: 'true'
 PenaltyReturnTypeOnItsOwnLine: '999999'
 IndentCaseLabels: 'true'
-PackConstructorInitializers: 'CurrentLine'
+IndentPPDirectives: 'BeforeHash'
+ColumnLimit: 120
+AlignArrayOfStructures: 'Left'
+# IndentPragmas: 'AfterHash'

@@ -33,108 +33,103 @@
 #include <streambuf>
 
 namespace estd {
-    class substreambuf : public std::streambuf {
-    public:
-        substreambuf(std::streambuf* sbuf, std::size_t start, std::size_t len) :
-            buf(sbuf),
-            start(start),
-            length(len),
-            pos(0) {
-            setbuf(nullptr, 0);
-        }
+	class substreambuf : public std::streambuf {
+	public:
+		substreambuf() : buf(nullptr), start(0), length(0), pos(0) { setbuf(nullptr, 0); }
 
-        substreambuf(const substreambuf& other) {
-            setbuf(nullptr, 0);
-            buf = other.buf;
-            start = other.start;
-            length = other.length;
-            pos = other.pos;
-        }
+		substreambuf(std::streambuf* sbuf, uint64_t start, uint64_t len) :
+			buf(sbuf), start(start), length(len), pos(0) {
+			setbuf(nullptr, 0);
+		}
 
-        substreambuf(substreambuf&& other) {
-            setbuf(nullptr, 0);
-            buf = other.buf;
-            start = other.start;
-            length = other.length;
-            pos = other.pos;
-        }
+		substreambuf(const substreambuf& other) {
+			setbuf(nullptr, 0);
+			buf = other.buf;
+			start = other.start;
+			length = other.length;
+			pos = other.pos;
+		}
 
-        substreambuf& operator=(const substreambuf& other) {
-            setbuf(nullptr, 0);
-            buf = other.buf;
-            start = other.start;
-            length = other.length;
-            pos = other.pos;
-            return *this;
-        }
+		substreambuf(substreambuf&& other) {
+			setbuf(nullptr, 0);
+			buf = other.buf;
+			start = other.start;
+			length = other.length;
+			pos = other.pos;
+		}
 
-        substreambuf& operator=(substreambuf&& other) {
-            setbuf(nullptr, 0);
-            buf = other.buf;
-            start = other.start;
-            length = other.length;
-            pos = other.pos;
-            return *this;
-        }
+		substreambuf& operator=(const substreambuf& other) {
+			setbuf(nullptr, 0);
+			buf = other.buf;
+			start = other.start;
+			length = other.length;
+			pos = other.pos;
+			return *this;
+		}
 
-    protected:
-        int underflow() {
-            if (pos >= length) return traits_type::eof();
-            seekoff(std::streamoff(0), std::ios_base::cur);
-            return buf->sgetc();
-        }
+		substreambuf& operator=(substreambuf&& other) {
+			setbuf(nullptr, 0);
+			buf = other.buf;
+			start = other.start;
+			length = other.length;
+			pos = other.pos;
+			return *this;
+		}
 
-        int uflow() {
-            if (pos > length) return traits_type::eof();
-            seekoff(std::streamoff(0), std::ios_base::cur);
-            pos += std::streamsize(1);
-            return buf->sbumpc();
-        }
+	protected:
+		int underflow() {
+			if (pos >= length) return traits_type::eof();
+			seekoff(std::streamoff(0), std::ios_base::cur);
+			return buf->sgetc();
+		}
 
-        std::streampos seekoff(
-            std::streamoff off,
-            std::ios_base::seekdir way,
-            std::ios_base::openmode which = std::ios_base::in |
-                                            std::ios_base::out
-        ) {
-            std::streampos cursor;
+		int uflow() {
+			if (pos > length) return traits_type::eof();
+			seekoff(std::streamoff(0), std::ios_base::cur);
+			pos += std::streamsize(1);
+			return buf->sbumpc();
+		}
 
-            if (way == std::ios_base::beg) cursor = off;
-            else if (way == std::ios_base::cur)
-                cursor = pos + off;
-            else if (way == std::ios_base::end)
-                cursor = length - off;
+		std::streampos seekoff(
+			std::streamoff off,
+			std::ios_base::seekdir way,
+			std::ios_base::openmode which = std::ios_base::in | std::ios_base::out
+		) {
+			std::streampos cursor;
 
-            if (cursor < 0 || cursor >= length) return std::streampos(-1);
-            pos = cursor;
-            if (buf->pubseekpos(start + pos, which) == std::streampos(-1))
-                return std::streampos(-1);
+			if (way == std::ios_base::beg) cursor = off;
+			else if (way == std::ios_base::cur)
+				cursor = pos + off;
+			else if (way == std::ios_base::end)
+				cursor = length - off;
 
-            return pos;
-        }
+			if (cursor < 0 || cursor >= length) return std::streampos(-1);
+			pos = cursor;
+			if (buf->pubseekpos(start + pos, which) == std::streampos(-1)) return std::streampos(-1);
 
-        std::streampos seekpos(
-            std::streampos sp,
-            std::ios_base::openmode which = std::ios_base::in |
-                                            std::ios_base::out
-        ) {
-            if (sp < 0 || sp >= length) return std::streampos(-1);
-            pos = sp;
-            if (buf->pubseekpos(start + pos, which) == std::streampos(-1))
-                return std::streampos(-1);
-            return pos;
-        }
+			return pos;
+		}
 
-        std::streamsize xsgetn(char* s, std::streamsize n) {
-            seekoff(std::streamoff(0), std::ios_base::cur);
-            if (pos + n >= length) { n = length - pos; }
-            return buf->sgetn(s, n);
-        }
+		std::streampos seekpos(
+			std::streampos sp, std::ios_base::openmode which = std::ios_base::in | std::ios_base::out
+		) {
+			if (sp < 0 || sp >= length) return std::streampos(-1);
+			pos = sp;
+			if (buf->pubseekpos(start + pos, which) == std::streampos(-1)) return std::streampos(-1);
+			return pos;
+		}
 
-    private:
-        std::streambuf* buf;
-        std::streampos start;
-        std::streamsize length;
-        std::streampos pos;
-    };
+		std::streamsize xsgetn(char* s, std::streamsize n) {
+			seekoff(std::streamoff(0), std::ios_base::cur);
+			if (pos + n >= length) { n = length - pos; }
+			if (n == 0) return 0;
+			return buf->sgetn(s, n);
+		}
+
+	private:
+		std::streambuf* buf;
+		std::streampos start;
+		std::streamsize length;
+		std::streampos pos;
+	};
 };// namespace estd
