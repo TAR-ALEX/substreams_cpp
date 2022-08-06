@@ -56,11 +56,14 @@ namespace estd {
 
 		isubstream& operator=(const isubstream& other) {
 			buffer_ = other.buffer_;
+			init(&buffer_);
 			return *this;
 		}
 
 		isubstream& operator=(isubstream&& other) {
 			buffer_ = other.buffer_;
+			init(&buffer_);
+			clear();
 			return *this;
 		}
 
