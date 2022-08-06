@@ -63,7 +63,6 @@ namespace estd {
 		isubstream& operator=(isubstream&& other) {
 			buffer_ = other.buffer_;
 			init(&buffer_);
-			clear();
 			return *this;
 		}
 
